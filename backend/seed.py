@@ -1,0 +1,238 @@
+from datetime import date, timedelta
+from database import Base, SessionLocal, engine
+from models import Prospect
+
+
+def seed_database(force: bool = False):
+    Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+    try:
+        count = db.query(Prospect).count()
+        if count > 0 and not force:
+            print(f"Database already has {count} prospects. Skipping seed.")
+            return
+
+        if force and count > 0:
+            db.query(Prospect).delete()
+            db.commit()
+            print("Cleared existing prospects for re-seeding.")
+
+        today = date.today()
+        prospects_data = [
+            {
+                "company_name": "Acme Automation",
+                "website": "https://acme-demo.example.com",
+                "company_type": "AI Agency",
+                "owner_name": "John Smith",
+                "owner_title": "Founder & CEO",
+                "email": "john@example.com",
+                "linkedin_url": "https://linkedin.com/in/demo-johnsmith",
+                "phone": "+1 555-0101",
+                "country": "United States",
+                "timezone": "EST",
+                "service_type": "AI Automation Agency",
+                "potential_need": "n8n automation / CRM integration / AI chatbot",
+                "source": "Apollo",
+                "status": "INTERESTED",
+                "priority": "HIGH",
+                "first_contact_date": (today - timedelta(days=10)).isoformat(),
+                "last_contact_date": (today - timedelta(days=2)).isoformat(),
+                "next_follow_up_date": today.isoformat(),
+                "proposal_amount": 3500.0,
+                "currency": "USD",
+                "demo_sent": True,
+                "demo_type": "AI Support/Sales Agent",
+                "notes": "Very interested in automating their client intake process. Mentioned high inbound volume from social campaigns.",
+            },
+            {
+                "company_name": "Northstar AI",
+                "website": "https://northstar-demo.example.com",
+                "company_type": "Consultancy",
+                "owner_name": "Sarah Jenkins",
+                "owner_title": "Managing Partner",
+                "email": "sarah@example.com",
+                "linkedin_url": "https://linkedin.com/in/demo-sarahjenkins",
+                "phone": "+1 555-0102",
+                "country": "Canada",
+                "timezone": "EST",
+                "service_type": "Software Agency",
+                "potential_need": "RAG system for internal knowledge base and client portals",
+                "source": "LinkedIn",
+                "status": "PROPOSAL_SENT",
+                "priority": "HIGH",
+                "first_contact_date": (today - timedelta(days=14)).isoformat(),
+                "last_contact_date": (today - timedelta(days=3)).isoformat(),
+                "next_follow_up_date": (today - timedelta(days=1)).isoformat(),
+                "proposal_amount": 7200.0,
+                "currency": "USD",
+                "demo_sent": True,
+                "demo_type": "RAG",
+                "notes": "Sent comprehensive proposal for custom RAG document pipeline. Waiting for partner board sign-off.",
+            },
+            {
+                "company_name": "GrowthFlow Agency",
+                "website": "https://growthflow-demo.example.com",
+                "company_type": "Digital Marketing",
+                "owner_name": "Michael Chang",
+                "owner_title": "Head of Growth",
+                "email": "michael@example.com",
+                "linkedin_url": "https://linkedin.com/in/demo-michaelchang",
+                "phone": "+44 20 7946 0991",
+                "country": "United Kingdom",
+                "timezone": "GMT",
+                "service_type": "Marketing Agency",
+                "potential_need": "Automated cold email sequence qualification & CRM sync",
+                "source": "Apollo",
+                "status": "FOLLOW_UP",
+                "priority": "MEDIUM",
+                "first_contact_date": (today - timedelta(days=7)).isoformat(),
+                "last_contact_date": (today - timedelta(days=5)).isoformat(),
+                "next_follow_up_date": (today + timedelta(days=2)).isoformat(),
+                "proposal_amount": None,
+                "currency": "USD",
+                "demo_sent": False,
+                "demo_type": None,
+                "notes": "Replied asking for case studies on marketing agencies in the B2B SaaS space.",
+            },
+            {
+                "company_name": "Vertex Digital",
+                "website": "https://vertex-demo.example.com",
+                "company_type": "Custom Dev Shop",
+                "owner_name": "Elena Rostova",
+                "owner_title": "Operations Director",
+                "email": "elena@example.com",
+                "linkedin_url": "https://linkedin.com/in/demo-elenarostova",
+                "phone": "+1 555-0104",
+                "country": "United States",
+                "timezone": "PST",
+                "service_type": "Software Agency",
+                "potential_need": "Workflow automation between HubSpot, Jira, and Slack",
+                "source": "Google",
+                "status": "CONTACTED",
+                "priority": "MEDIUM",
+                "first_contact_date": (today - timedelta(days=3)).isoformat(),
+                "last_contact_date": (today - timedelta(days=3)).isoformat(),
+                "next_follow_up_date": (today + timedelta(days=4)).isoformat(),
+                "proposal_amount": None,
+                "currency": "USD",
+                "demo_sent": False,
+                "demo_type": None,
+                "notes": "Sent initial personalized pitch highlighting past webhook & API integration work.",
+            },
+            {
+                "company_name": "Orbit Automations",
+                "website": "https://orbit-demo.example.com",
+                "company_type": "AI Agency",
+                "owner_name": "David Miller",
+                "owner_title": "Founder",
+                "email": "david@example.com",
+                "linkedin_url": "https://linkedin.com/in/demo-davidmiller",
+                "phone": "+1 555-0105",
+                "country": "United States",
+                "timezone": "CST",
+                "service_type": "AI Automation Agency",
+                "potential_need": "Voice AI caller for appointment bookings & lead qualification",
+                "source": "Referral",
+                "status": "WON",
+                "priority": "HIGH",
+                "first_contact_date": (today - timedelta(days=30)).isoformat(),
+                "last_contact_date": (today - timedelta(days=1)).isoformat(),
+                "next_follow_up_date": None,
+                "proposal_amount": 5000.0,
+                "currency": "USD",
+                "demo_sent": True,
+                "demo_type": "Lead Qualification",
+                "notes": "Signed retainer agreement! Kickoff call scheduled for next Monday.",
+            },
+            {
+                "company_name": "Apex Creative Studio",
+                "website": "https://apexcreative-demo.example.com",
+                "company_type": "Creative Agency",
+                "owner_name": "Chloe Taylor",
+                "owner_title": "Creative Director",
+                "email": "chloe@example.com",
+                "linkedin_url": "https://linkedin.com/in/demo-chloetaylor",
+                "phone": "+61 2 9374 4000",
+                "country": "Australia",
+                "timezone": "AEST",
+                "service_type": "Marketing Agency",
+                "potential_need": "AI asset generation workflow and automatic cloud backups",
+                "source": "LinkedIn",
+                "status": "NEW",
+                "priority": "LOW",
+                "first_contact_date": None,
+                "last_contact_date": None,
+                "next_follow_up_date": None,
+                "proposal_amount": None,
+                "currency": "USD",
+                "demo_sent": False,
+                "demo_type": None,
+                "notes": "Discovered profile on LinkedIn. Need to research team structure before initiating outreach.",
+            },
+            {
+                "company_name": "Nexus Logic",
+                "website": "https://nexuslogic-demo.example.com",
+                "company_type": "Enterprise Dev",
+                "owner_name": "Marcus Vance",
+                "owner_title": "CTO",
+                "email": "marcus@example.com",
+                "linkedin_url": "https://linkedin.com/in/demo-marcusvance",
+                "phone": "+1 555-0107",
+                "country": "United States",
+                "timezone": "PST",
+                "service_type": "Software Agency",
+                "potential_need": "Database sync agent / Secure Webhooks",
+                "source": "Apollo",
+                "status": "NEGOTIATING",
+                "priority": "HIGH",
+                "first_contact_date": (today - timedelta(days=20)).isoformat(),
+                "last_contact_date": (today - timedelta(days=4)).isoformat(),
+                "next_follow_up_date": (today + timedelta(days=1)).isoformat(),
+                "proposal_amount": 9500.0,
+                "currency": "USD",
+                "demo_sent": True,
+                "demo_type": "Automation",
+                "notes": "Reviewing SOW terms, SLA and data security clauses.",
+            },
+            {
+                "company_name": "Beacon Media Labs",
+                "website": "https://beaconmedia-demo.example.com",
+                "company_type": "Media Agency",
+                "owner_name": "Rachel Green",
+                "owner_title": "Co-Founder",
+                "email": "rachel@example.com",
+                "linkedin_url": "https://linkedin.com/in/demo-rachelgreen",
+                "phone": "+1 555-0108",
+                "country": "United States",
+                "timezone": "EST",
+                "service_type": "Other",
+                "potential_need": "Customer feedback AI summarizer",
+                "source": "Website",
+                "status": "LOST",
+                "priority": "LOW",
+                "first_contact_date": (today - timedelta(days=45)).isoformat(),
+                "last_contact_date": (today - timedelta(days=15)).isoformat(),
+                "next_follow_up_date": None,
+                "proposal_amount": 2500.0,
+                "currency": "USD",
+                "demo_sent": True,
+                "demo_type": "Other",
+                "notes": "Decided to build internally with their in-house dev team.",
+            },
+        ]
+
+        for p_data in prospects_data:
+            prospect = Prospect(**p_data)
+            db.add(prospect)
+
+        db.commit()
+        print(f"Successfully seeded {len(prospects_data)} prospects!")
+    finally:
+        db.close()
+
+
+if __name__ == "__main__":
+    import sys
+
+    force_seed = "--force" in sys.argv
+    seed_database(force=force_seed)
