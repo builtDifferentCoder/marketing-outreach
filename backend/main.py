@@ -1,3 +1,11 @@
+import os
+import sys
+
+# Ensure backend directory is in sys.path regardless of execution root
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+if CURRENT_DIR not in sys.path:
+    sys.path.insert(0, CURRENT_DIR)
+
 from contextlib import asynccontextmanager
 from typing import List, Optional
 from fastapi import Depends, FastAPI, HTTPException, Query, status
@@ -188,3 +196,9 @@ def trigger_seed(force: bool = False):
     """Reset or seed default demo prospects."""
     seed_database(force=force)
     return {"message": "Database seeded successfully", "force": force}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
